@@ -23,37 +23,42 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.codice.imaging.nitfdemos.csshpa;
+package org.codice.imaging.nitfdemos.piapeb;
 
-import java.io.File;
 import org.codice.imaging.nitf.core.common.FileType;
 import org.codice.imaging.nitf.core.common.NitfFormatException;
-import org.codice.imaging.nitf.core.dataextension.DataExtensionSegment;
+import org.codice.imaging.nitf.core.header.NitfHeader;
 import org.codice.imaging.nitf.core.header.NitfHeaderFactory;
-import org.codice.imaging.nitf.deswrap.CSSHPA;
+import org.codice.imaging.nitf.core.tre.Tre;
+import org.codice.imaging.nitf.core.tre.TreEntry;
+import org.codice.imaging.nitf.core.tre.TreFactory;
+import org.codice.imaging.nitf.core.tre.TreSource;
 import org.codice.imaging.nitf.fluent.NitfCreationFlow;
 
 /**
  * Demo application to create NITF files containing Shapefile DES.
  */
-public class NitfShapeMaker {
+public class MIMCSAmaker {
 
     /**
      * @param args the command line arguments
-     * @throws NitfFormatException if there was a problem building the shapefile DES.
+     * @throws NitfFormatException if there was a construction problem...
      */
     public static void main(String[] args) throws NitfFormatException {
-        DataExtensionSegment csshpa = CSSHPA.createCSSHPA(FileType.NITF_TWO_ONE, new File("simplepoint.shp"), new File("simplepoint.shx"), new File("simplepoint.dbf"));
+        NitfHeader header = NitfHeaderFactory.getDefault(FileType.NITF_TWO_ONE);
+        Tre mimcsa = TreFactory.getDefault("MIMCSA", TreSource.ExtendedHeaderData);
+        mimcsa.add(new TreEntry("LAYER_ID", "1ad68fbf-d676-4702-9c40-8c264d13177b", "string"));
+        mimcsa.add(new TreEntry("NOMINAL_FRAME_RATE", "2.0000000E-01", "real"));
+        mimcsa.add(new TreEntry("MIN_FRAME_RATE", "1.9900000E-01", "real"));
+        mimcsa.add(new TreEntry("MAX_FRAME_RATE", "2.0100000E-01", "real"));
+        mimcsa.add(new TreEntry("T_RSET", "00", "string"));
+        mimcsa.add(new TreEntry("MI_REQ_DECODER", "NC", "string"));
+        mimcsa.add(new TreEntry("MI_REQ_PROFILE", "Not applicable", "string"));
+        mimcsa.add(new TreEntry("MI_REQ_LEVEL", "N/A", "string"));
+        header.getTREsRawStructure().add(mimcsa);
         new NitfCreationFlow()
-                .fileHeader(() -> NitfHeaderFactory.getDefault(FileType.NITF_TWO_ONE))
-                .dataExtensionSegment(() -> { return csshpa; })
-                .write("csshpa_simplepoint.ntf");
-
-        DataExtensionSegment utf8 = CSSHPA.createCSSHPA(FileType.NITF_TWO_ONE, new File("encoding2.shp"), new File("encoding2.shx"), new File("encoding2.dbf"));
-        new NitfCreationFlow()
-                .fileHeader(() -> NitfHeaderFactory.getDefault(FileType.NITF_TWO_ONE))
-                .dataExtensionSegment(() -> { return utf8; })
-                .write("csshpa_toyko.ntf");
+            .fileHeader(() -> { return header; } )
+            .write("mimcsa.ntf");
     }
 
 }

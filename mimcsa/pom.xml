@@ -6,7 +6,7 @@
         <artifactId>imaging-nitf-demos</artifactId>
         <version>0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>CSSHPA</artifactId>
+    <artifactId>MIMCSA</artifactId>
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
@@ -16,7 +16,7 @@
         </dependency>
         <dependency>
             <groupId>org.codice.imaging.nitf</groupId>
-            <artifactId>deswrap</artifactId>
+            <artifactId>trewrap</artifactId>
             <version>0.5-SNAPSHOT</version>
         </dependency>
     </dependencies>
@@ -24,4 +24,5 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
+    <name>MIMCSA</name>
 </project>
